@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 14:00:13 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/09 15:30:01 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/09 19:34:09 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ t_list	*ft_lstnew(void *content)
 	new = (t_list *)malloc(sizeof(t_list));
 	if (new == NULL)
 		return (NULL);
-	new -> content = content;
-	new -> next = 0;
+	new->content = content;
+	new->next = 0;
 	return (new);
 }
 
@@ -35,8 +35,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 		*lst = new;
 	else
 	{
-		while (temp->next != 0)
-			temp = temp->next;
+		temp = ft_lstlast(*lst);
 		temp->next = new;
 	}
 }
@@ -93,4 +92,13 @@ int	ft_lstsize(t_list *lst)
 		i++;
 	}
 	return (i);
+}
+
+t_list	*ft_lstlast(t_list *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next != 0)
+		lst = lst->next;
+	return (lst);
 }

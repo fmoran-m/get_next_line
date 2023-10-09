@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 13:30:12 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/09 15:28:09 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/09 19:39:27 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,34 +14,38 @@
 
 char	*get_next_line(int fd)
 {
-	list_t	*node;
-	list_t	**lst;
-	char	buf[5];
-	size_t	r_len;
-	int		lst_size;
-	char	*str;
-	int		i;
-	int		j;
+	t_list		*node;
+	t_list		*lst;
+	static char	buf[5];
+	size_t		r_len;
+	char		*str;
+	int			i;
+	int			j;
 
-	r_len = sizeof(buf);
+	r_len = sizeof(buf) - 1;
 	lst = NULL;
-	while(read(fd, buf, r_len) > 0)
+	while (read(fd, buf, r_len) > 0)
 	{
+		buf[r_len] = 0;
 		node = ft_lstnew(buf);
-		ft_lstadd_back(lst, node);
+		if (!lst)
+			lst = node;
+		else
+			ft_lstadd_back(&lst, node);
 	}
-	lst_size = ft_lstsize(node) * r_len;
-	str = malloc((lstsize + 1) * sizeof(char));
+	str = (char *)malloc(sizeof(buf) * ft_lstsize(lst) + 1);
 	i = 0;
-	while (node)  
+	node = lst;
+	while (node)
 	{
 		j = 0;
-		while (node->content[j])
+		while (((char *)node->content)[j])
 		{
-			str[i] = node->content[j];
-			j++;
+			str[i] = ((char *)node->content)[j];
 			i++;
+			j++;
 		}
+		node = node->next;
 	}
 	str[i] = 0;
 	return (str);
@@ -55,5 +59,6 @@ int	main(void)
 	fd = open("test.txt", O_RDONLY);
 	str = get_next_line(fd);
 	printf("%s\n", str);
+	free (str);
 	return (0);
 }
