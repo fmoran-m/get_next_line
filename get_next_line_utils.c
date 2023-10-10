@@ -12,34 +12,6 @@
 
 #include "get_next_line.h"
 
-t_list	*ft_lstnew(void *content)
-{
-	t_list	*new;
-
-	new = (t_list *)malloc(sizeof(t_list));
-	if (new == NULL)
-		return (NULL);
-	new->content = content;
-	new->next = 0;
-	return (new);
-}
-
-void	ft_lstadd_back(t_list **lst, t_list *new)
-{
-	t_list	*temp;
-
-	if (!new)
-		return ;
-	temp = *lst;
-	if (*lst == NULL)
-		*lst = new;
-	else
-	{
-		temp = ft_lstlast(*lst);
-		temp->next = new;
-	}
-}
-/*
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*ptr;
@@ -77,28 +49,60 @@ size_t	ft_strlen(const char *s)
 		i++;
 	return (i);
 }
-*/
 
-int	ft_lstsize(t_list *lst)
+char    *ft_strdup(const char *s1)
 {
-	int	i;
+        size_t  len;
+        size_t  i;
+        char    *ptr;
 
-	if (!lst)
-		return (0);
-	i = 0;
-	while (lst)
-	{
-		lst = lst->next;
-		i++;
-	}
-	return (i);
+        len = ft_strlen(s1);
+        ptr = (char *) malloc(len * (sizeof(char)) + 1);
+        if (ptr == 0)
+               return (0);
+        i = 0;
+        while (s1[i])
+        {
+                ptr[i] = s1[i];
+                i++;
+        }
+        ptr[i] = '\0';
+        return (ptr);
 }
 
-t_list	*ft_lstlast(t_list *lst)
+void    *ft_calloc(size_t count, size_t size)
 {
-	if (!lst)
-		return (NULL);
-	while (lst->next != 0)
-		lst = lst->next;
-	return (lst);
+        char    *ptr;
+        size_t  i;
+        size_t  total_amount;
+
+        i = 0;
+//        if (count == SIZE_MAX || size == SIZE_MAX)
+ //               return (0);
+        total_amount = size * count;
+        ptr = malloc(total_amount);
+        if (ptr == 0)
+                return (0);
+        while (i < total_amount)
+        {
+                ptr[i] = 0;
+                i++;
+        }
+        return (ptr);
+}
+
+char    *ft_strchr(char *s, int c)
+{
+        unsigned char   ca;
+
+        ca = c;
+        while (*s)
+        {
+	    if (*s == ca)
+		return ((char *)s);
+            s++;
+        }
+        if (*s == ca)
+	    return ((char *)s + 1);
+        return (0);
 }
