@@ -12,64 +12,6 @@
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	char	*ptr;
-	size_t	i;
-	size_t	k;
-
-	i = 0;
-	k = 0;
-	if (!s1 || !s2)
-		return (0);
-	ptr = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (ptr == 0)
-		return (0);
-	while (s1[i])
-	{
-		ptr[i] = s1[i];
-		i++;
-	}
-	while (s2[k])
-	{
-		ptr[i] = s2[k];
-		i++;
-		k++;
-	}
-	ptr[i] = '\0';
-	return (ptr);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
-
-char    *ft_strdup(const char *s1)
-{
-        size_t  len;
-        size_t  i;
-        char    *ptr;
-
-        len = ft_strlen(s1);
-        ptr = (char *) malloc(len * (sizeof(char)) + 1);
-        if (ptr == 0)
-               return (0);
-        i = 0;
-        while (s1[i])
-        {
-                ptr[i] = s1[i];
-                i++;
-        }
-        ptr[i] = '\0';
-        return (ptr);
-}
-
 void    *ft_calloc(size_t count, size_t size)
 {
         char    *ptr;
@@ -78,7 +20,7 @@ void    *ft_calloc(size_t count, size_t size)
 
         i = 0;
 //        if (count == SIZE_MAX || size == SIZE_MAX)
- //               return (0);
+ //              return (0);
         total_amount = size * count;
         ptr = malloc(total_amount);
         if (ptr == 0)
@@ -91,18 +33,46 @@ void    *ft_calloc(size_t count, size_t size)
         return (ptr);
 }
 
-char    *ft_strchr(char *s, int c)
+t_list  *ft_lstnew(void *content)
 {
-        unsigned char   ca;
+        t_list  *new;
 
-        ca = c;
-        while (*s)
+        new = (t_list *)malloc(sizeof(t_list));
+        if (new == NULL)
+                return (NULL);
+        new -> content = content;
+        new -> next = 0;
+        return (new);
+}
+
+void    ft_lstadd_back(t_list **lst, t_list *new)
+{
+        t_list  *temp;
+
+        if (!new)
+                return ;
+        temp = *lst;
+        if (*lst == NULL)
+                *lst = new;
+        else
         {
-	    if (*s == ca)
-		return ((char *)s);
-            s++;
+	    while(temp->next != 0)
+		temp = temp->next;
+            temp->next = new;
         }
-        if (*s == ca)
-	    return ((char *)s + 1);
-        return (0);
+}
+
+void    ft_lstclear(t_list **lst)
+{
+        t_list  *temp;
+
+        if (!lst || !del)
+                return ;
+        while (*lst)
+        {
+                temp = (*lst)->next;
+		free(*lst);
+                *lst = temp;
+        }
+        *lst = NULL;
 }

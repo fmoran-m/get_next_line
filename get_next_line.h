@@ -8,9 +8,8 @@
 # include <stdio.h>
 
 char			*get_next_line(int fd);
-char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_strdup(const char *s1);
-size_t			ft_strlen(const char *s);
+t_list                  *ft_lstnew(void *content);
+void                    ft_lstadd_back(t_list **lst, t_list *new);
+void                    ft_lstclear(t_list **lst, void (*del)(void*));
 void			*ft_calloc(size_t count, size_t size);
-char			*ft_strchr(char *s, int c);
 #endif
