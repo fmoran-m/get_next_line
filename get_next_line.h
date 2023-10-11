@@ -6,6 +6,7 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include <stdio.h>
+# include <stdint.h>
 typedef struct	s_list
 {
 	void			*content;
