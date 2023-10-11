@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:24:50 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/11 19:05:57 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/11 21:32:08 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*real_buf(char *buf)
 			str = (char *)ft_calloc((i + 2), sizeof(char)); 
 			if (!str)
 				return (NULL);
-			while (j < i)
+			while (j <= i)
 			{
 				str[j] = buf[j];
 				j++;
@@ -76,15 +76,23 @@ char	*get_next_line(int fd)
 
 	str = NULL;
 	temp = NULL;
-	buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char)); //PROTEGER
+	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char)); //PROTEGER
+	if (!buf)
+		return (NULL);
 	if (is_intro(extra))
 	{
 		str = real_buf(extra); //PROTEGER
+		if (!str)
+			return (NULL);
 		extra = after_n(extra);
 		return (str);
 	}
 	if (extra != 0)
+	{
 		str = ft_strdup(extra); //PROTEGER
+		if (!str)
+			return (NULL);
+	}
 	extra = NULL;
 	while (read(fd, buf, BUFFER_SIZE) > 0)
 	{
@@ -92,11 +100,20 @@ char	*get_next_line(int fd)
 		if (is_intro(buf))
 		{
 			temp = real_buf(buf); //PROTEGER Y LIBERAR
+			if (!temp)
+				return (NULL);
 			str = ft_strjoin(str, temp); //PROTEGER Y LIBERAR
+			if (!str)
+			{
+				free(temp);
+				return (NULL);
+			}
 			extra = after_n(buf);
 			return (str);
 		}
 		str = ft_strjoin(str, buf); //PROTEGER Y LIBERAR
+		if (!str)
+			return (NULL);
 	}
 	return (str);
 }
@@ -105,8 +122,10 @@ int main (void)
 {
 	int fd = open("test.txt", O_RDONLY);
 	char *a = get_next_line(fd);
-	printf("%s\n", a);
-	a = get_next_line(fd);
-	printf("%s\n", a);
+	while (a != NULL)
+	{
+		printf("%s", a);
+		a = get_next_line(fd);
+	}
 	return 0;
 }
