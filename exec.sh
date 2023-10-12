@@ -1,2 +1,2 @@
 #!/bin/sh
-cc get_next_line.c get_next_line_utils.c -fsanitize=address -g -Wall -Wextra -Werror -BUFFER_SIZE=88888 
+cc get_next_line.c get_next_line_utils.c -fsanitize=address -g -Wall -Wextra -Werror -BUFFER_SIZE=8 

@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 14:00:13 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/11 19:43:03 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/12 21:44:38 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,11 @@ char	*ft_strchr(char *s, int c)
 	while (*s)
 	{
 		if (*s == ca)
-			return ((char *)s);
+			return ((char *)s + 1);
 		s++;
 	}
 	if (*s == ca)
-		return ((char *)s);
+		return ((char *)s + 1);
 	return (0);
 }
 

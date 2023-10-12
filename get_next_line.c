@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:24:50 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/11 21:32:08 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/13 00:23:23 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,57 +56,62 @@ int	is_intro(char *buf)
 	return (0);
 }
 
-char	*after_n(char *buf)
+char	*check_static(char *str, char *extra)
 {
-	while (*buf)
-	{
-		if (*buf == '\n')
-			return (buf + 1);
-		buf++;
-	}
-	return (0);
-}
-
-/* Las funciones a usar que vamos a necesitar serán:
-    1. La booleana
-    2. La que transforma el buf a una string hasta \n (Podemos simplemente colocar un nulo detrás de \n en lugar de hacer un malloc)
-    3.La primera parte de la función
-    4. La segunda parte de la función
-    5. Get next line
-    6. EXTRA - Utilizar ft_strchr de utils modificada como after n.
-*/
-
-char	*get_next_line(int fd)
-{
-	static char	*extra; //Podemos hacer el buffer static, quitarnos esta y meter ya el buffer cambiado aquí
-	char		*buf;
-	char		*str;
-	char		*temp; //tal vez nos podamos librar de esta variable
-
-	str = NULL;
-	temp = NULL;
-	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char)); //Si el buffer está vacío
 	if (is_intro(extra))
 	{
 		str = real_buf(extra);
-		extra = after_n(extra);
+		extra = ft_strchr(extra, '\n');
 		return (str);
 	}
 	if (extra != 0)
 		str = ft_strdup(extra);
-	extra = NULL; //Estos dos if en una función
+	return (str);
+}
+
+char	*check_loop(char *str, char *buf)  
+{
+	char	*temp;
+
+	temp = NULL;
+	if (is_intro(buf))
+	{
+		temp = real_buf(buf);
+		str = ft_strjoin(str, temp);
+		free (temp);
+		return (str);
+	}
+	str = ft_strjoin(str, buf);
+	return (str);
+}
+		
+char	*get_next_line(int fd)
+{
+	static char	*extra;
+	char		*buf;
+	char		*str;
+	char		*temp;
+
+	str = NULL;
+	temp = NULL;
+	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	str = check_static(str, extra);
+	if(is_intro(extra))
+	{
+		extra = ft_strchr(extra, '\n');
+		return (str);
+	}
+	extra = NULL;
 	while (read(fd, buf, BUFFER_SIZE) > 0)
 	{
-		buf[BUFFER_SIZE] = 0;
+		str = check_loop(str, buf);
 		if (is_intro(buf))
 		{
-			temp = real_buf(buf);
-			str = ft_strjoin(str, temp);
-			extra = after_n(buf);
+			extra = ft_strchr(buf, '\n'); 
 			return (str);
 		}
-		str = ft_strjoin(str, buf);
-	} //Esto lo podemos meter perfectamente en otra función
+	}
+	free (buf);
 	return (str);
 }
 
