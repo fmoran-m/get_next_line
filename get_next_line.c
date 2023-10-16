@@ -118,6 +118,8 @@ char	*get_next_line(int fd)
 	return (line);
     }
     file = NULL;
+    if (ft_strlen(line) == 0)
+	return (NULL);
     return (line);
 }
 
