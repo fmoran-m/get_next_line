@@ -107,6 +107,8 @@ char	*get_next_line(int fd)
 			return (str);
 		}
 	}
+	free (extra);
+	free (buf);
 	return (str);
 }
 
