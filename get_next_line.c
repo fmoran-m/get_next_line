@@ -12,114 +12,125 @@
 
 #include "get_next_line.h"
 
-char	*real_buf(char *buf)
+int is_intro(char *buf)
 {
-	int		i;
-	int		j;
-	char	*str;
+    int	i;
 
-	i = 0;
-	j = 0;
-	str = NULL;
-	while (buf[i])
-	{
-		if (buf[i] == '\n')
-		{
-			str = (char *)ft_calloc((i + 2), sizeof(char)); //Esto lo tengo que liberar en un momento, en la
-			if (!str) //										string principal
-				return (NULL);
-			while (j <= i)
-			{
-				str[j] = buf[j];
-				j++;
-			}
-			return (str);
-		}
-		i++;
-	}
-	return (ft_strdup(buf)); //Para poder liberar
-}
-
-int	is_intro(char *buf)
-{
-	int i;
-
-	if (buf == NULL)
-		return (0);
-	i = 0;
-	while (buf[i])
-	{
-		if (buf[i] == '\n')
-			return (1);
-		i++;
-	}
+    if (!buf)
 	return (0);
+    i = 0;
+    while (buf[i])
+    {
+	if (buf[i] == '\n')
+	    return (1);
+	i++;
+    }
+    return (0);
 }
 
-char	*check_static(char *str, char *extra)
+char	*new_line(char *line)
 {
-	if (is_intro(extra))
-	{
-		str = real_buf(extra); //Me va a devolver algo duplicado, debo liberarlo
-		return (str);
-	}
-	if (extra != 0)
-		str = ft_strdup(extra); //Ojo con liberar la anterior
-	return (str);
+    char    *str;
+    int	    i;
+    int	    j;
+
+    i = 0;
+    j = 0;
+    while (line[i] && line[i] != '\n')
+	i++;
+    if (line[i] == 0)
+	return (line);
+    str = (char *)ft_calloc((i + 2), sizeof(char)); //proteger
+    while (j <= i)
+    {
+	str[j] = line[j]; 
+	j++;
+    }
+    free (line);
+    return (str);
 }
 
-char	*check_loop(char *str, char *buf)  
+char	*read_line(int fd, char *file)
 {
-	char	*temp;
+    char    *buf;
+    char    *line;
+    ssize_t buf_read;
 
-	temp = NULL;
+    line = ft_strdup(file);
+    buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+    buf_read = 1;
+    while (buf_read > 0)
+    {
+	buf_read = read(fd, buf, BUFFER_SIZE);
+	buf[buf_read] = 0;
 	if (is_intro(buf))
 	{
-		temp = real_buf(buf);
-		str = ft_strjoin(str, temp); //Aquí hay fuga en el momento en el que no libero la str antes de join
-		return (str);
+	    line = ft_strjoin(line, buf);
+	    free (buf);
+	    return (line);
 	}
-	str = ft_strjoin(str, buf);
-	return (str);
+	line = ft_strjoin(line, buf);
+    }
+    free (buf);
+    return (line);
 }
-		
+
+char	*new_file(char *line, char* file) //Free file
+{
+    int	    i;
+    int	    j;
+    char    *str;
+
+    i = 0;
+    j = 0;
+    while (line[i])
+	i++;
+    while (line[j] != '\n')
+	j++;
+    str = (char *)ft_calloc((i - j) + 2, sizeof(char));
+    j++;
+    if (line[j] == 0)
+	return (0);
+    i = 0;
+    while (line[j])
+    {
+	str[i] = line[j];
+	i++;
+	j++;
+    }
+    str[i] = 0;
+    free (file);
+    return (str);
+}
+
 char	*get_next_line(int fd)
 {
-	static char	*extra;
-	char		*buf;
-	char		*str;
+    static char	*file;
+    char	*line;
 
-	str = NULL;
-	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char)); //Tengo que liberar el buffer al final.
-	str = check_static(str, extra); //Liberar mucho
-	if(is_intro(extra))
-	{
-		extra = ft_strchr(extra, '\n'); //Hacer que strchr libere
-		return (str);
-	}
-	extra = NULL;
-	while (read(fd, buf, BUFFER_SIZE) > 0)
-	{
-		str = check_loop(str, buf); //OJO MIRAR LA FUNCIÓN PARA LIBERAR
-		if (is_intro(buf))
-		{
-			extra = ft_strchr(buf, '\n'); //Hay fuga: muevo el puntero. Debo crear una copia para poder liberar
-			return (str);
-		}
-	}
-	free (extra);
-	free (buf);
-	return (str);
+    if (fd < 0 || BUFFER_SIZE <= 0)
+	return (NULL);
+    line = read_line(fd, file); 
+    if (is_intro(line))
+    {
+	file = new_file(line, file);
+	line = new_line(line);
+	return (line);
+    }
+    file = NULL;
+    return (line);
 }
 
 int main (void)
 {
-	int fd = open("test.txt", O_RDONLY);
-	char *a = get_next_line(fd);
-	while (a != NULL)
-	{
-		printf("%s", a);
-		a = get_next_line(fd);
-	}
-	return 0;
+    char    *a;
+    int fd = open("test.txt", O_RDONLY);
+    a = get_next_line(fd);
+    while (a != 0)
+    {
+	printf("%s", a);
+	free (a);
+	a = get_next_line(fd);
+    }
+    return 0;
 }
