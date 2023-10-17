@@ -75,7 +75,7 @@ char	*read_line(int fd, char *file)
     return (line);
 }
 
-char	*new_file(char *line, char* file) //Free file
+char	*new_file(char *line, char* file)
 {
     int	    i;
     int	    j;
@@ -90,7 +90,10 @@ char	*new_file(char *line, char* file) //Free file
     str = (char *)ft_calloc((i - j) + 2, sizeof(char));
     j++;
     if (line[j] == 0)
-	return (0);
+    {
+	free (str);
+	return (NULL);
+    }
     i = 0;
     while (line[j])
     {
@@ -117,9 +120,6 @@ char	*get_next_line(int fd)
 	line = new_line(line);
 	return (line);
     }
-    file = NULL;
-    if (ft_strlen(line) == 0)
-	return (NULL);
     return (line);
 }
 
@@ -128,11 +128,12 @@ int main (void)
     char    *a;
     int fd = open("test.txt", O_RDONLY);
     a = get_next_line(fd);
-    while (a != 0)
+    while (a != NULL)
     {
 	printf("%s", a);
 	free (a);
 	a = get_next_line(fd);
     }
+    close (fd);
     return 0;
 }
