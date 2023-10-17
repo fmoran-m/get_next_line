@@ -34,6 +34,10 @@ char	*new_line(char *line)
     int	    i;
     int	    j;
 
+    if (!line)
+	return (NULL);
+    if (!is_intro(line))
+	return (line);
     i = 0;
     j = 0;
     while (line[i] && line[i] != '\n')
@@ -63,6 +67,8 @@ char	*read_line(int fd, char *file)
     {
 	buf_read = read(fd, buf, BUFFER_SIZE);
 	buf[buf_read] = 0;
+	if (buf_read == 0)
+	    break ;
 	if (is_intro(buf))
 	{
 	    line = ft_strjoin(line, buf);
@@ -71,6 +77,8 @@ char	*read_line(int fd, char *file)
 	}
 	line = ft_strjoin(line, buf);
     }
+    if (line == 0)
+	return (NULL);
     free (buf);
     return (line);
 }
@@ -81,6 +89,8 @@ char	*new_file(char *line, char* file)
     int	    j;
     char    *str;
 
+    if (!is_intro(line))
+	return (NULL);
     i = 0;
     j = 0;
     while (line[i])
@@ -114,12 +124,10 @@ char	*get_next_line(int fd)
     if (fd < 0 || BUFFER_SIZE <= 0)
 	return (NULL);
     line = read_line(fd, file); 
-    if (is_intro(line))
-    {
-	file = new_file(line, file);
-	line = new_line(line);
-	return (line);
-    }
+    file = new_file(line, file);
+    line = new_line(line);
+    if (!file && !line)
+	return (NULL);
     return (line);
 }
 
