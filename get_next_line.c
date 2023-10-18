@@ -78,7 +78,10 @@ char	*read_line(int fd, char *file)
 	line = ft_strjoin(line, buf);
     }
     if (line == 0)
+    {
+	free (buf);
 	return (NULL);
+    }
     free (buf);
     return (line);
 }
@@ -124,9 +127,15 @@ char	*get_next_line(int fd)
     if (fd < 0 || BUFFER_SIZE <= 0)
 	return (NULL);
     line = read_line(fd, file); 
+    if (!line && file)
+    {
+	line = new_line(file);
+	file = NULL;
+	return (line);
+    }
     file = new_file(line, file);
     line = new_line(line);
-    if (!file && !line)
+    if (!line && !file)
 	return (NULL);
     return (line);
 }
