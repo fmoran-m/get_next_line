@@ -93,7 +93,10 @@ char	*new_file(char *line, char* file)
     char    *str;
 
     if (!is_intro(line))
+    {
+	free (file);
 	return (NULL);
+    }
     i = 0;
     j = 0;
     while (line[i])
@@ -102,9 +105,10 @@ char	*new_file(char *line, char* file)
 	j++;
     str = (char *)ft_calloc((i - j) + 2, sizeof(char));
     j++;
-    if (line[j] == 0)
+    if (!line[j])
     {
 	free (str);
+	free (file);
 	return (NULL);
     }
     i = 0;
@@ -130,6 +134,7 @@ char	*get_next_line(int fd)
     if (!line && file)
     {
 	line = new_line(file);
+	free (file);
 	file = NULL;
 	return (line);
     }
