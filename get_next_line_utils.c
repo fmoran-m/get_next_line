@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 14:00:13 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/19 19:24:50 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/19 23:52:18 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,6 @@ size_t	ft_strlen(char *s)
 	while (s[i])
 		i++;
 	return (i);
-}
-
-char	*ft_strchr(char *s, int c)
-{
-	unsigned char	ca;
-
-	ca = c;
-	while (*s)
-	{
-		if (*s == ca)
-			return ((char *)s + 1);
-		s++;
-	}
-	if (*s == ca)
-		return ((char *)s + 1);
-	return (0);
 }
 
 char	*ft_strjoin(char *s1, char *s2)

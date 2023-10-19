@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:24:50 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/19 19:32:50 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/19 23:58:31 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ char	*read_line(int fd, char *file)
 	ssize_t	buf_read;
 
 	line = ft_strdup(file);
+	if (!line && file)
+		return (NULL);
 	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buf)
 		return (NULL);
@@ -86,6 +88,11 @@ char	*read_line(int fd, char *file)
 			return (line);
 		}
 		line = ft_strjoin(line, buf);
+		if (!line)
+		{
+			free (buf);
+			return (NULL);
+		}
     }
     if (line == 0)
     {
@@ -115,7 +122,7 @@ char	*new_file(char *line, char* file)
 		j++;
 	str = (char *)ft_calloc((i - j) + 2, sizeof(char));
 	if (!str)
-		return (free(file), NULL);
+		return (NULL);
 	j++;
 	if (!line[j])
 	{
@@ -161,7 +168,7 @@ char	*get_next_line(int fd)
 		return (NULL);
     return (line);
 }
-/*
+
 int main (void)
 {
     char    *a;
@@ -176,4 +183,3 @@ int main (void)
     close (fd);
     return 0;
 }
-*/
