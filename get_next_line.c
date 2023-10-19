@@ -44,7 +44,9 @@ char	*new_line(char *line)
 	i++;
     if (line[i] == 0)
 	return (line);
-    str = (char *)ft_calloc((i + 2), sizeof(char)); //proteger
+    str = (char *)ft_calloc((i + 2), sizeof(char));
+    if (!str)
+	return (free (line), NULL);
     while (j <= i)
     {
 	str[j] = line[j]; 
@@ -66,6 +68,12 @@ char	*read_line(int fd, char *file)
     while (buf_read > 0)
     {
 	buf_read = read(fd, buf, BUFFER_SIZE);
+	if (buf_read == -1)
+	{
+	    free (buf);
+	    free (line);
+	    return (NULL);
+	}
 	buf[buf_read] = 0;
 	if (buf_read == 0)
 	    break ;
@@ -104,6 +112,10 @@ char	*new_file(char *line, char* file)
     while (line[j] != '\n')
 	j++;
     str = (char *)ft_calloc((i - j) + 2, sizeof(char));
+    if (!str)
+	return (free(file), NULL);
+    if (!str)
+	return (NULL);
     j++;
     if (!line[j])
     {
@@ -128,23 +140,28 @@ char	*get_next_line(int fd)
     static char	*file;
     char	*line;
 
-    if (fd < 0 || BUFFER_SIZE <= 0)
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 	return (NULL);
     line = read_line(fd, file); 
-    if (!line && file)
+    if (!line)
     {
-	line = new_line(file);
 	free (file);
 	file = NULL;
-	return (line);
+	return (NULL);
     }
     file = new_file(line, file);
     line = new_line(line);
+    if (!line)
+    {
+	free (file);
+	file = NULL;
+	return (NULL);
+    }
     if (!line && !file)
 	return (NULL);
     return (line);
 }
-
+/*
 int main (void)
 {
     char    *a;
@@ -159,3 +176,4 @@ int main (void)
     close (fd);
     return 0;
 }
+*/
