@@ -114,8 +114,6 @@ char	*new_file(char *line, char* file)
     str = (char *)ft_calloc((i - j) + 2, sizeof(char));
     if (!str)
 	return (free(file), NULL);
-    if (!str)
-	return (NULL);
     j++;
     if (!line[j])
     {
