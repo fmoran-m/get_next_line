@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 14:00:13 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/12 21:44:38 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/19 19:24:50 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ void    *ft_calloc(size_t count, size_t size)
               return (0);
         total_amount = size * count;
         ptr = malloc(total_amount);
-        if (ptr == 0)
-                return (0);
+        if (!ptr)
+            return (NULL);
         while (i < total_amount)
         {
             ptr[i] = 0;
-	    i++;
+			i++;
         }
         return (ptr);
 }
@@ -68,6 +68,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!s1)
 	{
 	    ptr = ft_strdup(s2);
+		if (!ptr)
+			return (NULL);
 	    return (ptr);
 	}
 	if (!s2)
@@ -75,7 +77,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	k = 0;
 	ptr = (char *)ft_calloc((ft_strlen(s1) + ft_strlen(s2) + 1), sizeof(char));
-	if (ptr == NULL)
+	if (!ptr)
 	    return (NULL);
 	while (s1[i])
 	{
@@ -101,7 +103,10 @@ char	*ft_strdup(char *s1)
 	if (!s1)
 	    return (NULL);
 	len = ft_strlen(s1);
-	ptr = (char *)malloc(len * (sizeof(char)) + 1); i = 0;
+	ptr = (char *)malloc(len * (sizeof(char)) + 1); 
+	if (!ptr)
+		return (NULL);
+	i = 0;
 	while (s1[i])
 	{
 	    ptr[i] = s1[i];
