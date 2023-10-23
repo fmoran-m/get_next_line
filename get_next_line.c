@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:24:50 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/19 23:58:31 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/23 23:09:21 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char	*new_line(char *line)
 		return (line);
 	i = 0;
 	j = 0;
-	while (line[i] && line[i] != '\n')
+	while (line[i] != '\n')
 		i++;
 	if (line[i] == 0)
 		return (line);
@@ -63,41 +63,21 @@ char	*read_line(int fd, char *file)
 	ssize_t	buf_read;
 
 	line = ft_strdup(file);
-	if (!line && file)
-		return (NULL);
 	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buf)
-		return (NULL);
+		return (free (line), NULL);
 	buf_read = 1;
-	while (buf_read > 0)
+	while (buf_read > 0 && !is_intro(buf))
 	{
 		buf_read = read(fd, buf, BUFFER_SIZE);
 		if (buf_read == -1)
-		{
-			free (buf);
-			free (line);
-			return (NULL);
-		}
+			return (free(buf), free(line), NULL);
 		buf[buf_read] = 0;
 		if (buf_read == 0)
 			break ;
-		if (is_intro(buf))
-		{
-			line = ft_strjoin(line, buf);
-			free (buf);
-			return (line);
-		}
 		line = ft_strjoin(line, buf);
 		if (!line)
-		{
-			free (buf);
-			return (NULL);
-		}
-    }
-    if (line == 0)
-    {
-		free (buf);
-		return (NULL);
+			return (free (buf), NULL);
     }
     free (buf);
     return (line);
@@ -110,10 +90,9 @@ char	*new_file(char *line, char* file)
     char	*str;
 
 	if (!is_intro(line))
-	{
-		free (file);
+		return (free(file), NULL);
+	if (!line)
 		return (NULL);
-    }
 	i = 0;
 	j = 0;
 	while (line[i])
@@ -122,14 +101,10 @@ char	*new_file(char *line, char* file)
 		j++;
 	str = (char *)ft_calloc((i - j) + 2, sizeof(char));
 	if (!str)
-		return (NULL);
+		return (free(str), free(file), NULL); 
 	j++;
-	if (!line[j])
-	{
-		free (str);
-		free (file);
-		return (NULL);
-    }
+	if (!line[j])//Esto es para controlar que el siguiente al salto de línea no sea nulo
+		return (free(str), free(file), NULL);
 	i = 0;
     while (line[j])
     {
@@ -150,25 +125,11 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 		return (NULL);
     line = read_line(fd, file); 
-    if (!line)
-    {
-		free (file);
-		file = NULL;
-		return (NULL);
-    }
     file = new_file(line, file);
     line = new_line(line);
-    if (!line)
-    {
-		free (file);
-		file = NULL;
-		return (NULL);
-    }
-    if (!line && !file)
-		return (NULL);
     return (line);
 }
-
+/*
 int main (void)
 {
     char    *a;
@@ -183,3 +144,4 @@ int main (void)
     close (fd);
     return 0;
 }
+*/
