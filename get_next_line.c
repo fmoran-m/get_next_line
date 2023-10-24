@@ -122,7 +122,7 @@ char	*get_next_line(int fd)
 	static char	*file;
 	char	*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
     line = read_line(fd, file); 
     file = new_file(line, file);
