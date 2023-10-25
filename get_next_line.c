@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:24:50 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/23 23:09:21 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/25 19:16:21 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,12 @@ char	*read_line(int fd, char *file)
 		if (buf_read == -1)
 			return (free(buf), free(line), NULL);
 		buf[buf_read] = 0;
-		if (buf_read == 0)
-			break ;
-		line = ft_strjoin(line, buf);
-		if (!line)
-			return (free (buf), NULL);
+		if (buf_read > 0)
+		{
+			line = ft_strjoin(line, buf);
+			if (!line)
+				return (free (buf), NULL);
+		}
     }
     free (buf);
     return (line);
