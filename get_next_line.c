@@ -6,11 +6,20 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 14:24:50 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/25 19:16:21 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/26 17:57:21 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+void	free_file(char **file)
+{
+	if (*file)
+	{
+		free (*file);
+		*file = NULL;
+	}
+}
 
 int	is_intro(char *buf)
 {
@@ -60,6 +69,7 @@ char	*read_line(int fd, char *file)
 {
 	char	*buf;
 	char	*line;
+	char	*temp;
 	ssize_t	buf_read;
 
 	line = ft_strdup(file);
@@ -75,9 +85,20 @@ char	*read_line(int fd, char *file)
 		buf[buf_read] = 0;
 		if (buf_read > 0)
 		{
-			line = ft_strjoin(line, buf);
 			if (!line)
-				return (free (buf), NULL);
+			{
+				line = ft_strdup(buf);
+				if (!line)
+					return (NULL);
+			}
+			else
+			{
+				temp = ft_strjoin(line, buf);
+				if (!temp)
+					return (free (buf), NULL);
+				free (line);
+				line = temp;
+			}
 		}
     }
     free (buf);
@@ -90,15 +111,16 @@ char	*new_file(char *line, char* file)
     int		j;
     char	*str;
 
-	if (!is_intro(line))
-		return (free(file), NULL);
-	if (!line)
+	if (!is_intro(line) || !line)
+	{
+		free(file);
 		return (NULL);
+	}
 	i = 0;
 	j = 0;
 	while (line[i])
 		i++;
-    while (line[j] != '\n')
+    while (line[j] != '\n' && line[j])
 		j++;
 	str = (char *)ft_calloc((i - j) + 2, sizeof(char));
 	if (!str)
@@ -126,8 +148,18 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
     line = read_line(fd, file); 
+	if (!line)
+	{
+		free_file(&file);
+		return (NULL);
+	}
     file = new_file(line, file);
     line = new_line(line);
+	if (!line)
+	{
+		free_file(&file);
+		return (NULL);
+	}
     return (line);
 }
 /*

@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/09 14:00:13 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/19 23:52:18 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/26 13:54:33 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	size_t	i;
 	size_t	k;
 
-	if (!s1)
-	{
-	    ptr = ft_strdup(s2);
-		if (!ptr)
-			return (NULL);
-	    return (ptr);
-	}
-	if (!s2)
+	if (!s1 || !s2)
 	    return (NULL);
 	i = 0;
 	k = 0;
@@ -74,7 +67,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	    i++;
 	    k++;
 	}
-	free (s1);
 	return (ptr);
 }
 
