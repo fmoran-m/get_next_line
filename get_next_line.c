@@ -5,21 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/11 14:24:50 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/26 17:57:21 by fmoran-m         ###   ########.fr       */
+/*   Created: 2023/10/31 15:38:48 by fmoran-m          #+#    #+#             */
+/*   Updated: 2023/10/31 15:39:16 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void	free_file(char **file)
-{
-	if (*file)
-	{
-		free (*file);
-		*file = NULL;
-	}
-}
 
 int	is_intro(char *buf)
 {
@@ -37,130 +28,100 @@ int	is_intro(char *buf)
 	return (0);
 }
 
-char	*new_line(char *line)
-{
-	char	*str;
-    int		i;
-    int		j;
-
-	if (!line)
-		return (NULL);
-    if (!is_intro(line))
-		return (line);
-	i = 0;
-	j = 0;
-	while (line[i] != '\n')
-		i++;
-	if (line[i] == 0)
-		return (line);
-	str = (char *)ft_calloc((i + 2), sizeof(char));
-	if (!str)
-		return (free (line), NULL);
-    while (j <= i)
-	{
-		str[j] = line[j]; 
-		j++;
-    }
-	free (line);
-	return (str);
-}
-
 char	*read_line(int fd, char *file)
 {
 	char	*buf;
-	char	*line;
 	char	*temp;
 	ssize_t	buf_read;
 
-	line = ft_strdup(file);
+	if (!file)
+		file = ft_strdup("");
 	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buf)
-		return (free (line), NULL);
+		return (NULL);
 	buf_read = 1;
 	while (buf_read > 0 && !is_intro(buf))
 	{
 		buf_read = read(fd, buf, BUFFER_SIZE);
 		if (buf_read == -1)
-			return (free(buf), free(line), NULL);
+			return (free(buf), free_file(&file), NULL);
 		buf[buf_read] = 0;
-		if (buf_read > 0)
-		{
-			if (!line)
-			{
-				line = ft_strdup(buf);
-				if (!line)
-					return (NULL);
-			}
-			else
-			{
-				temp = ft_strjoin(line, buf);
-				if (!temp)
-					return (free (buf), NULL);
-				free (line);
-				line = temp;
-			}
-		}
-    }
-    free (buf);
-    return (line);
+		temp = ft_strjoin(file, buf);
+		if (!temp)
+			return (free (buf), free_file(&file), NULL);
+		free (file);
+		file = temp;
+	}
+	free (buf);
+	return (file);
 }
 
-char	*new_file(char *line, char* file)
+char	*new_line(char *file)
 {
-    int		i;
-    int		j;
-    char	*str;
+	int		i;
+	int		j;
+	char	*line;
 
-	if (!is_intro(line) || !line)
-	{
-		free(file);
-		return (NULL);
-	}
 	i = 0;
 	j = 0;
-	while (line[i])
+	while (file[i] != '\n' && file[i])
 		i++;
-    while (line[j] != '\n' && line[j])
+	if (!file[i])
+		return (file);
+	i++;
+	line = (char *)ft_calloc(i + 1, sizeof(char));
+	if (!line)
+		return (NULL);
+	while (j < i)
+	{
+		line[j] = file[j];
 		j++;
+	}
+	return (line);
+}
+
+char	*new_file(char *file, char *line)
+{
+	char	*str;
+	int		i;
+	int		j;
+
+	if (!is_intro(file))
+		return (NULL);
+	i = ft_strlen(file);
+	j = ft_strlen(line);
 	str = (char *)ft_calloc((i - j) + 2, sizeof(char));
-	if (!str)
-		return (free(str), free(file), NULL); 
-	j++;
-	if (!line[j])//Esto es para controlar que el siguiente al salto de línea no sea nulo
-		return (free(str), free(file), NULL);
 	i = 0;
-    while (line[j])
-    {
-		str[i] = line[j];
+	while (file[j])
+	{
+		str[i] = file[j];
 		i++;
 		j++;
 	}
-	str[i] = 0;
-	free (file);
+	free(file);
 	return (str);
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*file;
-	char	*line;
+	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-    line = read_line(fd, file); 
+	file = read_line(fd, file);
+	if (!file)
+		return (NULL);
+	if (!*file)
+		return (free_file(&file), NULL);
+	line = new_line(file);
+	file = new_file(file, line);
 	if (!line)
 	{
-		free_file(&file);
-		return (NULL);
+		free(file);
+		file = NULL;
 	}
-    file = new_file(line, file);
-    line = new_line(line);
-	if (!line)
-	{
-		free_file(&file);
-		return (NULL);
-	}
-    return (line);
+	return (line);
 }
 /*
 int main (void)
