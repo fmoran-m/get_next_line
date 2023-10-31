@@ -6,7 +6,7 @@
 /*   By: fmoran-m <fmoran-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/30 19:08:06 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/31 15:33:10 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/31 16:31:53 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ char			*ft_strjoin(char *s1, char *s2);
 void			*ft_calloc(size_t count, size_t size);
 size_t			ft_strlen(char *s);
 char			*ft_strdup(char *s1);
-void			free_file(char **file);
+char			*free_file(char **file);
 #endif

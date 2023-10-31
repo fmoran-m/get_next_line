@@ -6,7 +6,7 @@
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 15:39:08 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/31 15:39:25 by fmoran-m         ###   ########.fr       */
+/*   Updated: 2023/10/31 16:42:21 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,11 @@ void	*ft_calloc(size_t count, size_t size)
 	return (ptr);
 }
 
-void	free_file(char **file)
+char	*free_file(char **file)
 {
-	if (*file)
-	{
 		free (*file);
 		*file = NULL;
-	}
+		return (NULL);
 }
 
 size_t	ft_strlen(char *s)
