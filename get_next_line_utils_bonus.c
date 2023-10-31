@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/31 15:39:08 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/31 20:03:02 by fmoran-m         ###   ########.fr       */
+/*   Created: 2023/10/31 17:48:15 by fmoran-m          #+#    #+#             */
+/*   Updated: 2023/10/31 19:45:33 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void	*ft_calloc(size_t count, size_t size)
 {

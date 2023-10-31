@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fmoran-m <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fmoran-m <fmoran-m@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/31 15:38:48 by fmoran-m          #+#    #+#             */
-/*   Updated: 2023/10/31 20:03:22 by fmoran-m         ###   ########.fr       */
+/*   Created: 2023/10/31 17:47:59 by fmoran-m          #+#    #+#             */
+/*   Updated: 2023/10/31 19:46:01 by fmoran-m         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	is_intro(char *buf)
 {
@@ -106,19 +106,19 @@ char	*new_file(char *file, char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	*file;
+	static char	*file[OPEN_MAX];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	file = read_line(fd, file);
-	if (!file)
+	file[fd] = read_line(fd, file[fd]);
+	if (!file[fd])
 		return (NULL);
-	if (!*file)
-		return (free_file(&file));
-	line = new_line(file);
+	if (!*file[fd])
+		return (free_file(&file[fd]));
+	line = new_line(file[fd]);
 	if (!line)
-		return (free_file(&file));
-	file = new_file(file, line);
+		return (free_file(&file[fd]));
+	file[fd] = new_file(file[fd], line);
 	return (line);
 }
